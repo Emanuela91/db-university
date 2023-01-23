@@ -69,3 +69,40 @@ JOIN departments
 ON degrees.department_id = departments.id
 ORDER BY students.surname, students.name;
 ``````
+
+##### BONUS
+5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
+```sql
+SELECT* FROM degrees
+JOIN courses
+ON degrees.id = courses.degree_id
+JOIN course_teacher
+ON courses.id = course_teacher.course_id
+JOIN teachers
+ON course_teacher.teacher_id = teachers.id;
+```
+
+6. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
+```sql
+SELECT DISTINCT teachers.*
+FROM departments
+JOIN degrees
+ON departments.id = degrees.department_id
+JOIN courses
+ON degrees.id = courses.degree_id
+JOIN course_teacher
+ON courses.id = course_teacher.course_id
+JOIN teachers
+ON course_teacher.teacher_id = teachers.id
+WHERE departments.name LIKE "Dipartimento di Matematica";
+
+7. Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami
+```sql
+SELECT students.*, exams.course_id, COUNT(*), MAX(exam_student.vote) AS 'max_vote'
+FROM students
+JOIN exam_student
+ON students.id = exam_student.student_id
+JOIN exams
+ON exam_student.exam_id = exams.id
+GROUP BY students.id, exams.course_id
+HAVING max_vote >= 18;
